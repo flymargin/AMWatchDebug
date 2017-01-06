@@ -1,0 +1,1 @@
+platform/qr_encode
