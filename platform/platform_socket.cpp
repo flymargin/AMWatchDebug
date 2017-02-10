@@ -225,7 +225,7 @@ void platform_socket_on_recv_done(UINT8 socket_index)
     message_body = (void*)&recv_data_ind->sock_id;
     recv_data_ind->result = TRUE;
     recv_data_ind->sock_id = lua_socket_context.socket_info[socket_index].sock_id;
-    recv_data_ind->user_data = sizeof(mthl_recv_data_ind_struct) + (UINT32)message_body - (UINT32)&recv_data_ind;
+    recv_data_ind->user_data = sizeof(mthl_recv_data_ind_struct) + (PUINT32)message_body - (PUINT32)recv_data_ind;
 
     msg.message = MSG_ID_APP_MTHL_SOCK_RECV_IND;
     msg.wParam = (WPARAM)recv_data_ind;

@@ -129,8 +129,7 @@ INT32 abm_get_bearer_app_value(UINT32 type, UINT32 state)
 void mmi_abm_bearer_connect_req_hdlr(mmi_abm_bearer_event_connect_req_struct *info)
 {
     UINT8 ap_id;
-    int id, i;
-    UINT8 profile_id;
+    int id;
     int ori_account_id;
     abm_app_id_struct app;
     UINT8 ip_addr[4];
@@ -234,11 +233,9 @@ void mmi_abm_bearer_connect_req_hdlr(mmi_abm_bearer_event_connect_req_struct *in
 void mmi_abm_bearer_event_notify_rsp_hdlr(app_cbm_bearer_event_notify_rsp_struct * info)
 {
     UINT8 ap_id;
-    int id, i;
-    UINT8 profile_id;
+    int id;
     int ori_account_id;
     abm_app_id_struct app;
-     UINT8 ip_addr[4];
     abm_app_proc_struct *app_proc;
     
     ap_id = cbm_get_app_id(info->account_id);
@@ -262,7 +259,7 @@ void mmi_abm_bearer_event_notify_rsp_hdlr(app_cbm_bearer_event_notify_rsp_struct
 void abm_soc_activate_req_hdlr(soc_abm_activate_req_struct* info)
 {
     UINT8 ap_id;
-    UINT32 id, i;
+    UINT32 id;
     UINT32 ori_account_id;
     abm_app_id_struct app;
     abm_app_proc_struct *app_proc;
@@ -460,7 +457,6 @@ INT8 cbm_release_bearer(UINT8 app_id)
     /*----------------------------------------------------------------*/
     app_soc_deactivate_req_struct *ind_ptr;
     MSG msg;
-    abm_app_id_struct app;
     UINT8 i;
     abm_app_proc_struct *app_proc = NULL;
     UINT32 nwk_acct_id = 0;
@@ -503,7 +499,6 @@ INT8 cbm_get_bearer_type(UINT32 account_id,
                              cbm_bearer_enum *bearer_type)
 {
     UINT32 ori_account_id;
-    UINT8 bearer_id;
 
     ori_account_id = cbm_get_original_account(account_id);
    

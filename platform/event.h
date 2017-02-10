@@ -21,7 +21,7 @@
 #define EVENT_GPIO          0x11
 #define EVENT_TP            0x12
 
-typedef int event_handle_t;
+typedef intptr_t event_handle_t;
 typedef void (*event_cb_t)(UINT8* data, UINT32 length);
 
 #define INVALID_EVENT_HANDLE    ((event_handle_t)0)
