@@ -1,1 +1,0 @@
-x64_lib/giflib/include
