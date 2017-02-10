@@ -51,6 +51,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
+				ProgramDataBaseFileName="$(IntDir)\$(TargetName).pdb"
 				WarningLevel="3"
 				DebugInformationFormat="4"
 			/>
@@ -70,9 +71,11 @@
 				AdditionalDependencies="libpngd.lib zlibd.lib lua5.1.lib Msimg32.lib Ws2_32.lib giflib.lib"
 				Version="1.0.1"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\$(PlatformName)_lib\zlib&quot;;&quot;..\..\$(PlatformName)_lib\lpng&quot;;&quot;..\..\$(PlatformName)_lib\giflib&quot;;&quot;..\..\$(PlatformName)_lib\lua5.1&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)..\..\$(PlatformName)_lib\zlib&quot;;&quot;$(SolutionDir)..\..\$(PlatformName)_lib\lpng&quot;;&quot;$(SolutionDir)..\..\$(PlatformName)_lib\giflib&quot;;&quot;$(SolutionDir)..\..\$(PlatformName)_lib\lua5.1&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				EntryPointSymbol=""
+				ResourceOnlyDLL="false"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -132,9 +135,10 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
+				ProgramDataBaseFileName="$(IntDir)\$(TargetName).pdb"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				CallingConvention="0"
 			/>
 			<Tool
@@ -158,7 +162,8 @@
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				EntryPointSymbol="DllMain"
+				EntryPointSymbol=""
+				ResourceOnlyDLL="false"
 				ImportLibrary=""
 				TargetMachine="17"
 				CLRThreadAttribute="2"
@@ -193,7 +198,7 @@
 			OutputDirectory="$(SolutionDir)..\..\$(ConfigurationName)_$(PlatformName)"
 			IntermediateDirectory="$(SolutionDir)..\..\$(ConfigurationName)_$(PlatformName)\$(ProjectName)"
 			ConfigurationType="2"
-			CharacterSet="1"
+			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -213,9 +218,10 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;AMWatchDll_EXPORTS"
+				Optimization="0"
+				EnableIntrinsicFunctions="false"
+				AdditionalIncludeDirectories="..\..\;..\..\platform;..\..\platform\json;..\..\platform\iconv;..\..\platform\font;..\..\platform\qr_encode;&quot;..\..\$(PlatformName)_lib\zlib\include&quot;;&quot;..\..\$(PlatformName)_lib\lpng\include&quot;;&quot;..\..\$(PlatformName)_lib\giflib\include&quot;;&quot;..\..\$(PlatformName)_lib\Lua5.1\include&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;__AM_LUA_TTSPLY_SUPPORT__;TOUCH_PANEL_SUPPORT;LUA_OPTIMIZE_MEMORY=0;AM_SLI3108_SUPPORT;AMWATCH_DLL;PNG_NO_STDIO;AMWatchDll_EXPORTS;LUA_USE_MTK_NUCLEUS;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
@@ -233,11 +239,15 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="libpngd.lib zlibd.lib lua5.1.lib Msimg32.lib Ws2_32.lib giflib.lib"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)..\..\$(PlatformName)_lib\zlib&quot;;&quot;$(SolutionDir)..\..\$(PlatformName)_lib\lpng&quot;;&quot;$(SolutionDir)..\..\$(PlatformName)_lib\giflib&quot;;&quot;$(SolutionDir)..\..\$(PlatformName)_lib\lua5.1&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				EntryPointSymbol=""
+				ResourceOnlyDLL="false"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -260,6 +270,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="set destdir=$(SolutionDir)..\..\$(PlatformName)_lib&#x0D;&#x0A;if exist $(OutDir)\$(ProjectName).dll copy $(OutDir)\$(ProjectName).dll %destdir%\$(ProjectName).dll /Y&#x0D;&#x0A;if exist $(OutDir)\$(ProjectName).lib copy $(OutDir)\$(ProjectName).lib %destdir%\$(ProjectName).lib /Y&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -267,7 +278,7 @@
 			OutputDirectory="$(SolutionDir)..\..\$(ConfigurationName)_$(PlatformName)"
 			IntermediateDirectory="$(SolutionDir)..\..\$(ConfigurationName)_$(PlatformName)\$(ProjectName)"
 			ConfigurationType="2"
-			CharacterSet="1"
+			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -288,9 +299,10 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;AMWatchDll_EXPORTS"
+				Optimization="0"
+				EnableIntrinsicFunctions="false"
+				AdditionalIncludeDirectories="..\..\;..\..\platform;..\..\platform\json;..\..\platform\iconv;..\..\platform\font;..\..\platform\qr_encode;&quot;..\..\$(PlatformName)_lib\zlib\include&quot;;&quot;..\..\$(PlatformName)_lib\lpng\include&quot;;&quot;..\..\$(PlatformName)_lib\giflib\include&quot;;&quot;..\..\$(PlatformName)_lib\Lua5.1\include&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;__AM_LUA_TTSPLY_SUPPORT__;TOUCH_PANEL_SUPPORT;LUA_OPTIMIZE_MEMORY=0;AM_SLI3108_SUPPORT;AMWATCH_DLL;PNG_NO_STDIO;AMWatchDll_EXPORTS;LUA_USE_MTK_NUCLEUS;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
@@ -308,11 +320,15 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="libpngd.lib zlibd.lib lua5.1.lib Msimg32.lib Ws2_32.lib giflib.lib"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)..\..\$(PlatformName)_lib\zlib&quot;;&quot;$(SolutionDir)..\..\$(PlatformName)_lib\lpng&quot;;&quot;$(SolutionDir)..\..\$(PlatformName)_lib\giflib&quot;;&quot;$(SolutionDir)..\..\$(PlatformName)_lib\lua5.1&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				EntryPointSymbol=""
+				ResourceOnlyDLL="false"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -335,6 +351,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="set destdir=$(SolutionDir)..\..\$(PlatformName)_lib&#x0D;&#x0A;if exist $(OutDir)\$(ProjectName).dll copy $(OutDir)\$(ProjectName).dll %destdir%\$(ProjectName).dll /Y&#x0D;&#x0A;if exist $(OutDir)\$(ProjectName).lib copy $(OutDir)\$(ProjectName).lib %destdir%\$(ProjectName).lib /Y&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
