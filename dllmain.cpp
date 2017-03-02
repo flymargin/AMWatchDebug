@@ -72,7 +72,8 @@ BOOL WINAPI DllMain(HMODULE hModule,
 		if(mutex_handle != NULL)
 		{
 			CloseHandle(mutex_handle);
-		}		
+		}
+		LogWriter::GetLogWriter()->DeleteLogWriter();
 		break;
 	}
 	return TRUE;

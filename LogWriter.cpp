@@ -17,7 +17,9 @@
 
 #define MAXFRACT     10000
 #define NumFract        4
+#define LOG_POOL_LENGTH 2048
 
+static CHAR logpool[LOG_POOL_LENGTH] = {0};
 LogWriter* LogWriter::theOnlyLogWriter = NULL;
 
 LogWriter::LogWriter()
@@ -27,6 +29,7 @@ LogWriter::LogWriter()
 	::GetLocalTime(&st);
 	::sprintf_s(this->fileName,1024,"AMLuaDebug.log", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 	fp = ::_fsopen(this->fileName, "w", _SH_DENYNO); // Permits read and write access
+	memset(logpool, 0, sizeof(logpool));
 }
 
 void itof(char **buf, int i)
@@ -140,15 +143,25 @@ void LogWriter::dbg_print(CHAR *buf, char *fmt, va_list ap)
 void LogWriter::LOGX(CHAR *fmt,...)
 {
 	va_list ap;
-	CHAR buffer[2048];
+	CHAR buffer[1024];
 	SYSTEMTIME st;
 	va_start (ap, fmt);
 	::GetLocalTime(&st);
-	sprintf_s(buffer,2048,"%04d-%02d-%02d %02d:%02d:%02d ", \
+	memset(buffer, 0, sizeof(buffer));
+	sprintf_s(buffer,1024,"%04d-%02d-%02d %02d:%02d:%02d ", \
 			  st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
-	LogWriter::GetLogWriter()->dbg_print(buffer+strlen(buffer), fmt, ap);
+	GetLogWriter()->dbg_print(buffer+strlen(buffer), fmt, ap);
 	strcat_s(buffer,sizeof(buffer),"\n");
-	LogWriter::GetLogWriter()->Log(buffer);
+
+	if(LOG_POOL_LENGTH - strlen(logpool) - 1 > strlen(buffer))
+	{
+		strcat_s(logpool+strlen(logpool), sizeof(logpool), buffer);
+	} else {
+		LogWriter::GetLogWriter()->Log(logpool);
+		memset(logpool, 0, sizeof(logpool));
+		strcat_s(logpool, buffer);
+	}
+
 	va_end(ap);
 }
 
@@ -163,7 +176,10 @@ void LogWriter::Log(CHAR* log)
 LogWriter::~LogWriter()
 {
 	if (this->fp != NULL)
-		::fclose(fp);
+	{
+		GetLogWriter()->Log(logpool);
+		::fclose(this->fp);
+	}
 }
 
 LogWriter* LogWriter::GetLogWriter()
