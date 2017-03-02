@@ -10,6 +10,7 @@
  *          Module for interfacing with the I2C interface.
  * History:
  *     panjun 16/09/13 Initially create file.
+ *     panjun 17/02/22 Add a dummy API,i2c.close.
  **************************************************************************/
 #include "stdafx.h"
 #include "lua.hpp"
@@ -145,6 +146,15 @@ static int i2c_read( lua_State *L )
     return 1;
 }
 
+static int i2c_close( lua_State *L )
+{
+	UINT id = luaL_checkinteger(L, 1);
+	LogWriter::LOGX("i2c_close(%d).",id);
+	lua_pushinteger(L, id);
+
+	return 1;
+}
+
 // Module function map
 #define MIN_OPT_LEVEL   2
 const luaL_reg i2c_map[] = 
@@ -157,6 +167,7 @@ const luaL_reg i2c_map[] =
   {"FAST", PLATFORM_I2C_SPEED_FAST},
   {"SLOW", PLATFORM_I2C_SPEED_SLOW},
 #endif //LUA_OPTIMIZE_MEMORY
+  {"close", i2c_close},
   {NULL, NULL}
 };
 

@@ -10,6 +10,7 @@
  *          Module for interfacing with the RTOS interface.
  * History:
  *     panjun 16/09/13 Initially create file.
+ *     panjun 17/02/22 Add a dummy API,rtos.get_version.
  **************************************************************************/
 
 #include "stdafx.h"
@@ -519,6 +520,12 @@ static int l_rtos_wifiupdate(lua_State *L)
 }
 #endif
 
+static int l_rtos_get_version(lua_State* L)
+{
+	lua_pushstring(L, "Luat_V9999_AirM2M");
+	return 1;
+}
+
 #define MIN_OPT_LEVEL 2
 const luaL_reg rtos_map[] =
 {
@@ -549,6 +556,7 @@ const luaL_reg rtos_map[] =
 #ifdef WIFI_UPDATE_SUPPORT
     {"wifiupdate", l_rtos_wifiupdate},
 #endif
+	{"get_version", l_rtos_get_version},
 	{NULL, NULL}
 };
 
