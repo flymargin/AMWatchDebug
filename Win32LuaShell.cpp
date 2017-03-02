@@ -368,6 +368,11 @@ struct luaL_reg LuaShellList[] = {
 int luaopen_LuaShell(lua_State* L)
 {
 	luaL_register(L,"LuaShell",LuaShellList);
+
+	lua_pushstring(L, "_VERSION");
+	lua_pushstring(L, LUAT_VERSION);
+	lua_rawset(L, -3);
+
 	return 1;
 }
 

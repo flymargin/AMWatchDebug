@@ -20,6 +20,12 @@
 #include "Windows.h"
 #include "AMWatchDll.h"
 
+/*-------------------------------------------------------------------------
+* Current LuaT library version
+ -------------------------------------------------------------------------*/
+#define LUAT_VERSION    "LuaT 2.0-rc1"
+#define LUAT_COPYRIGHT  "Copyright (C) 2015-2017 AirM2M LuaT"
+
 #define LUA_LOG_HEADER "[LUA] "
 
 #define SIMLA_MAIN_THREAD_STACK_SIZE (64*1024)
