@@ -348,6 +348,9 @@ int LuaShell_MainLoop(lua_State* L)
 	LogWriter::LOGX("[Win32LuaShell] LuaShell_MainLoop Exit status=%d.",
 		GetLastError());
 
+	CloseHandle(gDaemonThread);
+	CloseHandle(gLoadLuaThread);
+
 	LogWriter::LOGX("[Win32LuaShell] LuaShell_MainLoop Exit.");
 
 	return 0;

@@ -1150,11 +1150,6 @@ UINT32 SimCom::platform_uart_close(unsigned id)
 {
 	LogWriter::LOGX("[platform_uart[SimCom]] platform_uart_close id=%d.",id);
 
-	PostThreadMessage(dwReadThreadId,WM_QUIT,NULL,NULL);
-	WaitForSingleObject(dwReadThread, INFINITE);
-	PostThreadMessage(dwWriteThreadId,WM_QUIT,NULL,NULL);
-	WaitForSingleObject(dwWriteThread, INFINITE);
-	CloseHandle(semWrite);
     
 	if(txq.buf != NULL)WinUtil::L_FREE(txq.buf);
     QueueClean(&txq);
@@ -1358,6 +1353,8 @@ int platform_uart_close_all(void)
 	{
 		id = comDev[i].id;
 		dev = comDev[i].COM;
+		CloseHandle(comDev[i].dwReadThread);
+		CloseHandle(comDev[i].dwWriteThread);
 		if(dev != NULL) dev->platform_uart_close(id);
 		_destroy_com_dev(id);
 	}
