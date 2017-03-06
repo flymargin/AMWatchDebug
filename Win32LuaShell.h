@@ -42,6 +42,7 @@ extern HANDLE gLoadLuaThread;
 extern ULONG gLuaShellThreadId;
 extern HANDLE gLuaShellThread;
 
+extern int platform_init(void);
 extern int platform_uart_init(void);
 
 LUALIB_API int luaopen_LuaShell(lua_State *L);

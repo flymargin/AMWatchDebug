@@ -320,6 +320,7 @@ int LuaShell_MainLoop(lua_State* L)
 
 	platform_set_console_port(PLATFORM_UART_ID_ATC);
 
+	platform_init();
 	platform_uart_init();
 
 	gDaemonThread = CreateThread(NULL, 

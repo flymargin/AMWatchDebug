@@ -282,4 +282,8 @@ unsigned int intlog2( unsigned int v );
 void platform_set_console_port( unsigned char id );
 unsigned char platform_get_console_port(void);
 
+// *****************************************************************************
+// EVENT
+void init_event(void);
+
 #endif //__PLATFORM_H__

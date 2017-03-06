@@ -260,6 +260,7 @@ void WinSimlaClose(HINSTANCE hInst, HWND hwnd)
 {
 	startRtosSimulator = FALSE;
 
+	destroy_events();
 	platform_uart_close_all();
 
 	PostThreadMessage(gDaemonThreadId, WM_QUIT, NULL, NULL);

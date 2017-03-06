@@ -32,6 +32,7 @@ extern const elua_int_descriptor elua_int_table[ INT_ELUA_LAST ];
 int platform_init(void)
 {
     //cmn_platform_init();
+	init_event();
     
     return PLATFORM_OK;
 }

@@ -21,6 +21,7 @@
 #include "disp.h"
 
 
+void destroy_events(void);
 DWORD WINAPI WinSimlaMain(LPVOID lpParameter);  
 LRESULT CALLBACK WinSimlaProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 void WinSimlaCreate(HINSTANCE hInst, HWND hwnd);
