@@ -98,6 +98,13 @@ int WinTimer::win_start_timer(int timer_id, int milliSecond)
 
 	for(index = 0; index < MAX_WIN_TIMERS; index++)
 	{
+		if( winTimer[index].start_period != 0 && \
+			WinUtil::ust_get_current_time() - winTimer[index].start_period > winTimer[index].period)
+		{
+			KillTimer(hDaemonWnd, winTimer[index].win_timer_id);
+			memset(&winTimer[index], 0, sizeof(winTimer[index]));
+		}
+
 		if(winTimer[index].user_id == timer_id)
 		{
 			KillTimer(hDaemonWnd, winTimer[index].win_timer_id);
@@ -142,12 +149,11 @@ int WinTimer::win_start_timer(int timer_id, int milliSecond)
 int WinTimer::win_stop_timer(int timerId)
 {
 	int index;
-	int ret = PLATFORM_ERR;
 
 	if(hDaemonWnd == NULL)
 	{
 		LogWriter::LOGX("[WinTimer] win_stop_timer: hWnd==NULL.");
-		return ret;
+		return PLATFORM_ERR;
 	}
 
 	for(index = 0; index < MAX_WIN_TIMERS; index++)
@@ -162,15 +168,13 @@ int WinTimer::win_stop_timer(int timerId)
 	{
 		KillTimer(hDaemonWnd, winTimer[index].win_timer_id);
 		memset(&winTimer[index], 0, sizeof(winTimer[index]));
-		ret = PLATFORM_OK;
 	}
 	else
 	{
 		LogWriter::LOGX("[WinTimer] win_stop_timer: Don't find timer.");
-		ret = PLATFORM_ERR;
 	}
 
-	return ret;
+	return PLATFORM_OK;
 }
 
 BOOL WinTimer::win_timeout(int timerId)
