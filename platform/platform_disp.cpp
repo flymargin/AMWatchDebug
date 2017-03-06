@@ -1076,7 +1076,8 @@ Disp::~Disp()
 {
 	if(gdi_w32_lcd_buffer != NULL)
 	{
-		free(gdi_w32_lcd_buffer);
+		WinUtil::L_FREE(gdi_w32_lcd_buffer);
+		gdi_w32_lcd_buffer = NULL;
 	}
 
 	if(lcd_hdcMem != NULL) DeleteDC(lcd_hdcMem);
@@ -1446,7 +1447,7 @@ void Disp::w32_imitated_input(UINT16 type, POINT p)
 
 	if(onlyWatchDisp == NULL || g_s_init_end_bool == FALSE)
 	{
-		LogWriter::LOGX("[platform_disp] w32_imitated_input NULL.");
+		//LogWriter::LOGX("[platform_disp] w32_imitated_input NULL.");
 		return;
 	}
 
@@ -1656,7 +1657,7 @@ void Disp::w32_dspl_init(void)
 	if(gdi_w32_lcd_buffer == NULL)
 	{
 		gdi_w32_lcd_buffer = 
-			(BYTE*)malloc((skin_lcd_width+1) * (skin_lcd_height+1) * 4 * sizeof(BYTE));
+			(BYTE*)WinUtil::L_MALLOC((skin_lcd_width+1) * (skin_lcd_height+1) * 4 * sizeof(BYTE));
 
 		INT color = 0x000000;
 		for(INT x = 0,pos=0; x < skin_lcd_width; x++)
