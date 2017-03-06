@@ -33,6 +33,7 @@ int platform_init(void)
 {
     //cmn_platform_init();
 	init_event();
+	gpio_init();
     
     return PLATFORM_OK;
 }

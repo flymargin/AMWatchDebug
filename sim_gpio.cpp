@@ -29,13 +29,94 @@
 #define GPIO_DIR_INPUT  2
 #define GPIO_DIR_INT    3
 
+#define GPIO_MAX (NUM_PIO * 32)
+
 typedef struct{
     UINT8 dir;
     UINT8 val;
 }gpio_value_t;
 
 static event_handle_t gpio_event = INVALID_EVENT_HANDLE;
-static gpio_value_t gpio_value[NUM_PIO][32];
+static gpio_value_t gpio_value[GPIO_MAX] = {
+		{GPIO_DIR_OUTPUT, 1}, /* GPIO0 */
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+
+		{GPIO_DIR_OUTPUT, 1}, /* GPIO16 */
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+
+		{GPIO_DIR_OUTPUT, 1}, /* GPIO32 */
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+
+		{GPIO_DIR_OUTPUT, 1}, /* GPIO48 */
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+		{GPIO_DIR_OUTPUT, 1},
+};
+
+void gpio_init(void)
+{
+	INT i;
+
+	for(i=0; i < GPIO_MAX; i++)
+	{
+		gpio_value[i].dir = GPIO_DIR_OUTPUT;
+		gpio_value[i].val = 1;
+	}
+}
 
 void send_int_message(UINT8 int_id, UINT16 resnum){
 	PlatformMessage *message = (PlatformMessage*)WinUtil::L_MALLOC(sizeof(PlatformMessage));
@@ -49,13 +130,14 @@ void send_int_message(UINT8 int_id, UINT16 resnum){
 
 void gpio_event_cb(UINT8* packet, UINT32 length){
     UINT8 port, pin, val;
+	UINT8 realGpio;
 
     if(length < 1) return;
 
     switch(packet[0]){    
     case GPIO_EVENT_CHANGE:
         if(length != 4){
-            printf("gpio_event_cb: error int packet length %d!\n", length);
+            LogWriter::LOGX("gpio_event_cb: error int packet length %d!", length);
             break;
         }
         
@@ -63,14 +145,15 @@ void gpio_event_cb(UINT8* packet, UINT32 length){
         pin = packet[2];
         val = packet[3];
 
-        if(!(gpio_value[port][pin].dir == GPIO_DIR_INPUT || gpio_value[port][pin].dir == GPIO_DIR_INT)) break;
+		realGpio = (port << 5) + pin;
+        if(!(gpio_value[realGpio].dir == GPIO_DIR_INPUT || gpio_value[realGpio].dir == GPIO_DIR_INT)) break;
 
-        if(gpio_value[port][pin].val == val) break;
+        if(gpio_value[realGpio].val == val) break;
 
-        gpio_value[port][pin].val = val;
-        //printf("gpio_event_change:%d %d %d\n",port,pin,val);
+        gpio_value[realGpio].val = val;
+        //LogWriter::LOGX("gpio_event_change:%d %d %d\n",port,pin,val);
 
-        if(gpio_value[port][pin].dir == GPIO_DIR_INT){
+        if(gpio_value[realGpio].dir == GPIO_DIR_INT){
             send_int_message(val == 1 ? INT_GPIO_POSEDGE : INT_GPIO_NEGEDGE, PLATFORM_IO_ENCODE(port, pin, 0));
         }
         break;
@@ -82,12 +165,15 @@ void gpio_event_cb(UINT8* packet, UINT32 length){
 
 static _inline int set_dir(UINT8 port, UINT8 pin, UINT8 dir){
     UINT8 packet[4];
-    if(dir != GPIO_DIR_NOT_OPEN && gpio_value[port][pin].dir != GPIO_DIR_NOT_OPEN){
-		LogWriter::LOGX("[set_dir]: error pin has opened %d %d %d", port, pin, gpio_value[port][pin].dir);
+	UINT8 realGpio = (port << 5) + pin;
+    if(gpio_value[realGpio].dir == GPIO_DIR_NOT_OPEN){
+		LogWriter::LOGX("[set_dir]: error pin hasn't opened %d %d %d", port, pin, gpio_value[realGpio].dir);
         return -1;
     }
 
-    gpio_value[port][pin].dir = dir;
+	LogWriter::LOGX("[set_dir]  %d[%d,%d],%d", realGpio, port, pin, dir);
+
+    gpio_value[realGpio].dir = dir;
     packet[0] = GPIO_EVENT_DIR;
     packet[1] = port;
     packet[2] = pin;
@@ -98,18 +184,20 @@ static _inline int set_dir(UINT8 port, UINT8 pin, UINT8 dir){
 }
 
 static _inline int gpio_set(UINT8 port, UINT8 pin, UINT8 val){
-    if(port == 1 && gpio_value[port][pin].dir == GPIO_DIR_NOT_OPEN) {
+	UINT8 realGpio = (port << 5) + pin;
+
+    if(port == 1 && gpio_value[realGpio].dir == GPIO_DIR_NOT_OPEN) {
         set_dir(port, pin, GPIO_DIR_OUTPUT);
     }
 
-    if(gpio_value[port][pin].dir != GPIO_DIR_OUTPUT){
-        printf("[gpio_set]: pin is not output %d %d %d\n",port, pin, gpio_value[port][pin].dir);
+    if(gpio_value[realGpio].dir != GPIO_DIR_OUTPUT){
+        LogWriter::LOGX("[gpio_set]: pin is not output %d %d %d\n",port, pin, gpio_value[realGpio].dir);
         return -1;
     }
 
-    if(gpio_value[port][pin].val != val){
+    if(gpio_value[realGpio].val != val){
         UINT8 packet[4];
-        gpio_value[port][pin].val = val; 
+        gpio_value[realGpio].val = val; 
         packet[0] = GPIO_EVENT_SET;
         packet[1] = port;
         packet[2] = pin;
@@ -121,12 +209,13 @@ static _inline int gpio_set(UINT8 port, UINT8 pin, UINT8 val){
 }
 
 static _inline int gpio_get(UINT8 port, UINT8 pin){
-    if(gpio_value[port][pin].dir != GPIO_DIR_INPUT && gpio_value[port][pin].dir != GPIO_DIR_INT){
-	LogWriter::LOGX("[gpio_get]: pin is not input %d %d %d", port, pin, gpio_value[port][pin].dir);
+	UINT8 realGpio = (port << 5) + pin;
+    if(gpio_value[realGpio].dir != GPIO_DIR_INPUT && gpio_value[realGpio].dir != GPIO_DIR_INT){
+		LogWriter::LOGX("[gpio_get]: pin is not input %d %d %d", port, pin, gpio_value[realGpio].dir);
 	return -1;
     }
 
-    return gpio_value[port][pin].val;
+    return 0;
 }
 
 // ****************************************************************************

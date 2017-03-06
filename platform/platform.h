@@ -283,6 +283,10 @@ void platform_set_console_port( unsigned char id );
 unsigned char platform_get_console_port(void);
 
 // *****************************************************************************
+// GPIO
+void gpio_init(void);
+
+// *****************************************************************************
 // EVENT
 void init_event(void);
 
