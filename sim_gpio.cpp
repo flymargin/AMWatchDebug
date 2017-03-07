@@ -218,6 +218,16 @@ static _inline int gpio_get(UINT8 port, UINT8 pin){
     return 0;
 }
 
+static _inline int gpio_close(UINT8 port, UINT8 pin){
+	UINT8 realGpio = (port << 5) + pin;
+
+	if(gpio_value[realGpio].dir == GPIO_DIR_INT){
+		LogWriter::LOGX("[gpio_close]: EINT_UnMask %d %d %d", port, pin, gpio_value[realGpio].dir);
+	}
+
+	return 0;
+}
+
 // ****************************************************************************
 // ****************************************************************************
 // PIO functions
@@ -261,7 +271,7 @@ pio_type platform_pio_op( unsigned port_val, pio_type pinmask, int op )
             break;
             
         case PLATFORM_IO_PIN_CLOSE:
-            if(set_dir(port, pin, GPIO_DIR_NOT_OPEN) == -1) return 0;
+            if(gpio_close(port, pin) == -1) return 0;
             break;
             
         default:
